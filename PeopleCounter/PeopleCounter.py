@@ -1,7 +1,3 @@
-##Contador de personas
-##Federico Mejia
-##from picamera.array import PiRGBArray
-##from picamera import PiCamera
 import numpy as np
 import cv2 as cv
 import Person
@@ -12,24 +8,11 @@ try:
 except:
     print("No se puede abrir el archivo log")
 
-# Contadores de entrada y salida
 cnt_up = 0
 cnt_down = 0
 
-# Fuente de video
-# cap = cv.VideoCapture(0)
-cap = cv.VideoCapture('Test Files/TestVideo.avi')
-# camera = PiCamera()
-##camera.resolution = (160,120)
-##camera.framerate = 5
-##rawCapture = PiRGBArray(camera, size=(160,120))
-##time.sleep(0.1)
+cap = cv.VideoCapture(0)
 
-# Propiedades del video
-##cap.set(3,160) #Width
-##cap.set(4,120) #Height
-
-# Imprime las propiedades de captura a consola
 for i in range(19):
     print(i, cap.get(i))
 
@@ -39,7 +22,6 @@ frameArea = h * w
 areaTH = frameArea / 250
 print('Area Threshold', areaTH)
 
-# Lineas de entrada/salida
 line_up = int(2 * (h / 5))
 line_down = int(3 * (h / 5))
 
@@ -201,16 +183,11 @@ while (cap.isOpened()):
     cv.imshow('Frame', frame)
     cv.imshow('Mask', mask)
 
-    ##    rawCapture.truncate(0)
-    # preisonar ESC para salir
     k = cv.waitKey(30) & 0xff
     if k == 27:
         break
 # END while(cap.isOpened())
 
-#################
-#   LIMPIEZA    #
-#################
 log.flush()
 log.close()
 cap.release()
