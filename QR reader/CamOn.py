@@ -1,30 +1,30 @@
-import os
 import cv2 as cv
 from pyzbar.pyzbar import decode
-import matplotlib.pyplot as plt
-import numpy as np
-
 
 cap = cv.VideoCapture(0)
+results = []
 
 while 1:
-    ret, img = cap.read()
+    _, frame = cap.read()
+    qrs = decode(frame)
 
+    if len(qrs) > 0:
 
-    qr_info = decode(img)
-    if len(qr_info) > 0:
-        qr = qr_info[0]
-        data = qr.data
-        rect = qr.rect
-        polygon = qr.polygon
-        print(data, type(data))
-        cv.putText(img, data.decode(), (rect.left, rect.top - 15), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        # Extract text from each qr appearing
+        for qr in qrs:
+            text_data = qr.data.decode("utf-8")  # Decode bytes to string
+            if text_data not in results:
+                results.append(text_data)
+                print(text_data)
+            data = qr.data
+            rect = qr.rect
 
-        img = cv.rectangle(img, (rect.left, rect.top), (rect.left + rect.width, rect.top + rect.height), (0, 255, 0), 5)
-        img = cv.polylines(img, [np.array(polygon)], True, (255, 0, 0), 5)
+            # Drawings
+            cv.putText(frame, data.decode(), (rect.left, rect.top - 15), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            frame = cv.rectangle(frame, (rect.left, rect.top),
+                                 (rect.left + rect.width, rect.top + rect.height), (0, 255, 0), 5)
 
-    cv.imshow("Cam", img)
-
+    cv.imshow("Cam", frame)
     if cv.waitKey(1) & 0xFF == ord('q'):
         break
 
